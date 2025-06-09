@@ -2,11 +2,13 @@
 using GestionRespuestosAPI.Modelos;
 using GestionRespuestosAPI.Modelos.Dtos;
 using GestionRespuestosAPI.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionRespuestosAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase
@@ -21,6 +23,7 @@ namespace GestionRespuestosAPI.Controllers
             _categoriaRepository = categoriaRepository;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -39,7 +42,7 @@ namespace GestionRespuestosAPI.Controllers
         }
 
 
-
+        [AllowAnonymous]
         [HttpGet("{id:int}", Name = "ObtenerCategoria")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

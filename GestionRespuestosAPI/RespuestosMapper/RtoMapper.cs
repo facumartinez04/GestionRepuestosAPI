@@ -20,6 +20,22 @@ namespace GestionRespuestosAPI.RespuestosMapper
                 .ReverseMap();
 
 
+            CreateMap<UsuarioLoginDto, Usuario>()
+                .ReverseMap();
+
+            CreateMap<UsuarioRegisterDto, Usuario>()
+                .ReverseMap();
+
+            CreateMap<UsuarioReadDto, Usuario>()
+                .ReverseMap();
+
+
+            CreateMap<UsuarioDatosDto, Usuario>()
+        .ReverseMap();
+
+            CreateMap<UsuarioLoginRespuestaDto, Usuario>()
+       .ReverseMap();
+
         }
     }
 }

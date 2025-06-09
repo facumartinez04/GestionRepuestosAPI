@@ -2,11 +2,13 @@
 using GestionRespuestosAPI.Modelos;
 using GestionRespuestosAPI.Modelos.Dtos;
 using GestionRespuestosAPI.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionRespuestosAPI.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class RepuestosController : ControllerBase
@@ -50,6 +52,8 @@ namespace GestionRespuestosAPI.Controllers
             return Ok(repuestoDto);
         }
 
+
+        
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

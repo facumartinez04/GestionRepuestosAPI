@@ -3,7 +3,10 @@ using GestionRespuestosAPI.Data;
 using GestionRespuestosAPI.Repository;
 using GestionRespuestosAPI.Repository.Interfaces;
 using GestionRespuestosAPI.RespuestosMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,10 +24,49 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+
+
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IRepuestoRepository, RepuestoRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 builder.Services.AddAutoMapper(typeof(RtoMapper));
+
+
+
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var key = Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]);
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false, 
+        ValidateAudience = false, 
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.WithOrigins("http://localhost:7268")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
+
+
+
 
 var app = builder.Build();
 
@@ -41,8 +83,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
+
+
 app.UseAuthorization();
+
+app.UseCors("AllowAllOrigins");
+
 
 app.MapControllers();
 
 app.Run();
+
