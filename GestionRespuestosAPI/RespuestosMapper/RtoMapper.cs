@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GestionRepuestosAPI.Modelos.Dtos;
 using GestionRespuestosAPI.Modelos;
 using GestionRespuestosAPI.Modelos.Dtos;
 
@@ -35,6 +36,21 @@ namespace GestionRespuestosAPI.RespuestosMapper
 
             CreateMap<UsuarioLoginRespuestaDto, Usuario>()
        .ReverseMap();
+
+            CreateMap<VehiculoReadDto, Vehiculo>()
+            .ReverseMap();
+            CreateMap<VehiculoCreateDto, Vehiculo>()
+                .ReverseMap();
+
+            CreateMap<ProveedorReadDto, Proveedor>()
+                .ReverseMap();
+            CreateMap<ProveedorCreateDto, Proveedor>()
+                .ReverseMap();
+
+            CreateMap<RepuestoVehiculoReadDto, RepuestoVehiculo>()
+                .ReverseMap();
+            CreateMap<RepuestoVehiculoCreateDto, RepuestoVehiculo>()
+                .ReverseMap();
 
         }
     }

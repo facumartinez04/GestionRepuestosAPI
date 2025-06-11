@@ -77,7 +77,6 @@ namespace GestionRespuestosAPI.Repository
             UsuarioLoginRespuestaDto usuarioLoginRespuestaDto = new UsuarioLoginRespuestaDto
             {
                 Usuario = usuario,
-                Rol = usuario.Rol,
                 Token = manejaToken.WriteToken(token)
             };
 

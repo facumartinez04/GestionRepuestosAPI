@@ -1,4 +1,6 @@
 using AutoMapper;
+using GestionRepuestosAPI.Repository;
+using GestionRepuestosAPI.Repository.Interfaces;
 using GestionRespuestosAPI.Data;
 using GestionRespuestosAPI.Repository;
 using GestionRespuestosAPI.Repository.Interfaces;
@@ -29,6 +31,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IRepuestoRepository, RepuestoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();
+builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
+builder.Services.AddScoped<IRepuestoVehiculoRepository, RepuestoVehiculoRepository>();
 
 builder.Services.AddAutoMapper(typeof(RtoMapper));
 

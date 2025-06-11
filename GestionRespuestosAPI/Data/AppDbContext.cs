@@ -13,6 +13,8 @@ namespace GestionRespuestosAPI.Data
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<RepuestoVehiculo> RepuestosVehiculos { get; set; }
 
+        public DbSet<Proveedor> Proveedores { get; set; }
+
         public DbSet<Usuario> Usuarios { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
