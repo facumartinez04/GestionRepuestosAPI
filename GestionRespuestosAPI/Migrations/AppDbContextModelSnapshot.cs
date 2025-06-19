@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace GestionRespuestosAPI.Migrations
+namespace GestionRepuestosAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -59,10 +59,12 @@ namespace GestionRespuestosAPI.Migrations
             modelBuilder.Entity("GestionRepuestosAPI.Modelos.UsuarioPermiso", b =>
                 {
                     b.Property<int>("idUsuario")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("idUsuario");
 
                     b.Property<Guid>("idPermiso")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("idPermiso");
 
                     b.HasKey("idUsuario", "idPermiso");
 
@@ -72,10 +74,12 @@ namespace GestionRespuestosAPI.Migrations
             modelBuilder.Entity("GestionRepuestosAPI.Modelos.UsuarioRol", b =>
                 {
                     b.Property<int>("idUsuario")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("idUsuario");
 
                     b.Property<Guid>("idRol")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("idRol");
 
                     b.HasKey("idUsuario", "idRol");
 
@@ -229,6 +233,15 @@ namespace GestionRespuestosAPI.Migrations
                     b.ToTable("Vehiculos");
                 });
 
+            modelBuilder.Entity("GestionRepuestosAPI.Modelos.UsuarioPermiso", b =>
+                {
+                    b.HasOne("GestionRespuestosAPI.Modelos.Usuario", null)
+                        .WithMany("usuarioPermisos")
+                        .HasForeignKey("idUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GestionRespuestosAPI.Modelos.Repuesto", b =>
                 {
                     b.HasOne("GestionRespuestosAPI.Modelos.Categoria", "Categoria")
@@ -271,6 +284,11 @@ namespace GestionRespuestosAPI.Migrations
             modelBuilder.Entity("GestionRespuestosAPI.Modelos.Repuesto", b =>
                 {
                     b.Navigation("RepuestosVehiculos");
+                });
+
+            modelBuilder.Entity("GestionRespuestosAPI.Modelos.Usuario", b =>
+                {
+                    b.Navigation("usuarioPermisos");
                 });
 
             modelBuilder.Entity("GestionRespuestosAPI.Modelos.Vehiculo", b =>

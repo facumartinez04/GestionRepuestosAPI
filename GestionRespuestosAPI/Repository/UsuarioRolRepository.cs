@@ -54,6 +54,13 @@ namespace GestionRepuestosAPI.Repository
             return _dbContext.SaveChanges() >= 0;
         }
 
+        public ICollection<UsuarioRol> ObtenerRolesPorUsuario(int usuarioId)
+        {
+            return _dbContext.UsuariosRoles
+                .Where(ur => ur.idUsuario == usuarioId)
+                .ToList();
+        }
+
         public UsuarioRol ObtenerUsuarioRol(int usuarioId, Guid rolId)
         {
             return _dbContext.UsuariosRoles.FirstOrDefault(ur => ur.idUsuario == usuarioId && ur.idRol == rolId);

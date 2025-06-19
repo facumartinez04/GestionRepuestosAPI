@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace GestionRespuestosAPI.Migrations
+namespace GestionRepuestosAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250611024639_cargarolespermisos")]
-    partial class cargarolespermisos
+    [Migration("20250614162244_nuevo")]
+    partial class nuevo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,12 +62,19 @@ namespace GestionRespuestosAPI.Migrations
             modelBuilder.Entity("GestionRepuestosAPI.Modelos.UsuarioPermiso", b =>
                 {
                     b.Property<int>("idUsuario")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("idUsuario");
 
                     b.Property<Guid>("idPermiso")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("idPermiso");
+
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
 
                     b.HasKey("idUsuario", "idPermiso");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("UsuariosPermisos");
                 });
@@ -75,10 +82,12 @@ namespace GestionRespuestosAPI.Migrations
             modelBuilder.Entity("GestionRepuestosAPI.Modelos.UsuarioRol", b =>
                 {
                     b.Property<int>("idUsuario")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("idUsuario");
 
                     b.Property<Guid>("idRol")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("idRol");
 
                     b.HasKey("idUsuario", "idRol");
 
@@ -232,6 +241,13 @@ namespace GestionRespuestosAPI.Migrations
                     b.ToTable("Vehiculos");
                 });
 
+            modelBuilder.Entity("GestionRepuestosAPI.Modelos.UsuarioPermiso", b =>
+                {
+                    b.HasOne("GestionRespuestosAPI.Modelos.Usuario", null)
+                        .WithMany("usuarioPermisos")
+                        .HasForeignKey("UsuarioId");
+                });
+
             modelBuilder.Entity("GestionRespuestosAPI.Modelos.Repuesto", b =>
                 {
                     b.HasOne("GestionRespuestosAPI.Modelos.Categoria", "Categoria")
@@ -274,6 +290,11 @@ namespace GestionRespuestosAPI.Migrations
             modelBuilder.Entity("GestionRespuestosAPI.Modelos.Repuesto", b =>
                 {
                     b.Navigation("RepuestosVehiculos");
+                });
+
+            modelBuilder.Entity("GestionRespuestosAPI.Modelos.Usuario", b =>
+                {
+                    b.Navigation("usuarioPermisos");
                 });
 
             modelBuilder.Entity("GestionRespuestosAPI.Modelos.Vehiculo", b =>

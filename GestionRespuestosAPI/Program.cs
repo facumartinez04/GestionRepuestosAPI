@@ -34,6 +34,11 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();
 builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
 builder.Services.AddScoped<IRepuestoVehiculoRepository, RepuestoVehiculoRepository>();
+builder.Services.AddScoped<IUsuarioRolRepository, UsuarioRolRepository>();
+builder.Services.AddScoped<IRolRepository, RolRepository>();
+builder.Services.AddScoped<IPermisoRepository, PermisoRepository>();
+builder.Services.AddScoped<IUsuarioPermisoRepository, UsuarioPermisoRepository>();
+
 
 builder.Services.AddAutoMapper(typeof(RtoMapper));
 
@@ -84,6 +89,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+
 }
 
 app.UseHttpsRedirection();

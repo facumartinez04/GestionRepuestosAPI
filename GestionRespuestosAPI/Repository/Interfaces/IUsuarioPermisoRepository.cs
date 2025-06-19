@@ -10,6 +10,10 @@ namespace GestionRepuestosAPI.Repository.Interfaces
         bool CrearUsuarioPermiso(UsuarioPermiso usuarioPermiso);
         bool ActualizarUsuarioPermiso(UsuarioPermiso usuarioPermiso);
         bool EliminarUsuarioPermiso(int usuarioId, Guid permisoId);
+
+        ICollection<UsuarioPermiso> ObtenerPermisosPorUsuario(int usuarioId);
+
+
         bool GuardarCambios();
     }
 }

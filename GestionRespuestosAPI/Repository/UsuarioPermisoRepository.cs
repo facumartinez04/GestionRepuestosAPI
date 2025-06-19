@@ -54,14 +54,26 @@ namespace GestionRepuestosAPI.Repository
             return _dbContext.SaveChanges() >= 0;
         }
 
-        public UsuarioPermiso ObtenerUsuarioPermiso(int usuarioId, Guid permisoId)
+        public UsuarioPermiso ObtenerUsuarioPermiso(int usuarioId, Guid idUsuarioId)
         {
-            return _dbContext.UsuariosPermisos.FirstOrDefault(up => up.idUsuario == usuarioId && up.idPermiso == permisoId);
+            return _dbContext.UsuariosPermisos.FirstOrDefault(up => up.idUsuario == usuarioId && up.idPermiso == idUsuarioId);
         }
 
         public ICollection<UsuarioPermiso> ObtenerUsuariosPermisos()
         {
             return _dbContext.UsuariosPermisos.ToList();
+
+
         }
+
+        public ICollection<UsuarioPermiso> ObtenerPermisosPorUsuario(int usuarioId)
+        {
+            return _dbContext.UsuariosPermisos
+                .Where(up => up.idUsuario == usuarioId)
+                .ToList();
+            
+        }
+
     }
+
 }

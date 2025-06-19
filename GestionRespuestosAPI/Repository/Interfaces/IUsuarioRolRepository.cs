@@ -10,6 +10,8 @@ namespace GestionRepuestosAPI.Repository.Interfaces
         bool CrearUsuarioRol(UsuarioRol usuarioRol);
         bool ActualizarUsuarioRol(UsuarioRol usuarioRol);
         bool EliminarUsuarioRol(int usuarioId, Guid rolId);
+
+        ICollection<UsuarioRol> ObtenerRolesPorUsuario(int usuarioId);
         bool GuardarCambios();
     }
 }

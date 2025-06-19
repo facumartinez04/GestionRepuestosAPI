@@ -9,9 +9,11 @@ using GestionRespuestosAPI.Modelos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GestionRepuestosAPI.Controllers
 {
+    [Authorize(Roles = "Administrador,Usuario")]
     [Route("api/[controller]")]
     [ApiController]
     public class VehiculosController : ControllerBase

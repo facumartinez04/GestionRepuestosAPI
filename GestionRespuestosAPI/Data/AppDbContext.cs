@@ -44,11 +44,26 @@ namespace GestionRespuestosAPI.Data
                 .HasForeignKey(rv => rv.VehiculoId);
 
             modelBuilder.Entity<UsuarioPermiso>()
-             .HasKey(up => new { up.idUsuario, up.idPermiso });
+                .HasKey(up => new { up.idUsuario, up.idPermiso });
+
+            modelBuilder.Entity<UsuarioPermiso>()
+                .Property(up => up.idUsuario).HasColumnName("idUsuario");
+
+            modelBuilder.Entity<UsuarioPermiso>()
+                .Property(up => up.idPermiso).HasColumnName("idPermiso");
+
 
             modelBuilder.Entity<UsuarioRol>()
-                .HasKey(ur => new { ur.idUsuario, ur.idRol });
-        }
+            .HasKey(up => new { up.idUsuario, up.idRol });
+
+                modelBuilder.Entity<UsuarioRol>()
+                    .Property(ur => ur.idUsuario)
+                    .HasColumnName("idUsuario");
+
+                modelBuilder.Entity<UsuarioRol>()
+                    .Property(ur => ur.idRol)
+                    .HasColumnName("idRol");
+            }
 
 
 

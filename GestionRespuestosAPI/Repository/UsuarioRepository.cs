@@ -1,9 +1,12 @@
-﻿using GestionRespuestosAPI.Data;
+﻿using GestionRepuestosAPI.Modelos;
+using GestionRepuestosAPI.Modelos.Dtos;
+using GestionRespuestosAPI.Data;
 using GestionRespuestosAPI.Modelos;
 using GestionRespuestosAPI.Modelos.Dtos;
 using GestionRespuestosAPI.Repository.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -13,7 +16,11 @@ namespace GestionRespuestosAPI.Repository
     {
         private readonly AppDbContext _dbContext;
 
-        private string keySecret; 
+        private string keySecret;
+
+        private const int SaltSize = 16;
+        private const int KeySize = 32;
+        private const int Iterations = 10000;
 
         public UsuarioRepository(AppDbContext dbContext, IConfiguration config)
         {
@@ -48,14 +55,49 @@ namespace GestionRespuestosAPI.Repository
 
         public async Task<UsuarioLoginRespuestaDto> Login(UsuarioLoginDto usuarioLoginDto)
         {
-          
-            var passwordEncryptado = HashPassword(usuarioLoginDto.Password);
+            var usuario = _dbContext.Usuarios
+                .FirstOrDefault(u => u.NombreUsuario.ToLower() == usuarioLoginDto.NombreUsuario.ToLower());
 
-            var usuario = _dbContext.Usuarios.FirstOrDefault(u => u.NombreUsuario.ToLower() == usuarioLoginDto.NombreUsuario.ToLower() && u.Password == passwordEncryptado);
-
-            if (usuario == null)
+            if (usuario == null || !VerifyPassword(usuarioLoginDto.Password, usuario.Password))
             {
                 return null;
+            }
+
+            var usuarioReadDto = new UsuarioReadDto
+            {
+                Id = usuario.Id,
+                NombreUsuario = usuario.NombreUsuario,
+                Nombre = usuario.Nombre
+            };
+
+            var permisosUsuario = (
+                from up in _dbContext.UsuariosPermisos
+                join p in _dbContext.Permisos on up.idPermiso equals p.idPermiso
+                where up.idUsuario == usuario.Id
+                select new { p.idPermiso, p.nombre, p.dataPermiso }
+            ).ToList();
+
+            var rolesUsuario = (
+                from ur in _dbContext.UsuariosRoles
+                join r in _dbContext.Roles on ur.idRol equals r.idRol
+                where ur.idUsuario == usuario.Id
+                select new { r.idRol, r.descripcion }
+            ).ToList();
+
+            var claims = new List<Claim>
+    {
+        new Claim("nombreUsuario", usuario.NombreUsuario),
+        new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString())
+    };
+
+            foreach (var permiso in permisosUsuario)
+            {
+                claims.Add(new Claim("Permiso", permiso.dataPermiso));
+            }
+
+            foreach (var rol in rolesUsuario)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, rol.descripcion));
             }
 
             var manejaToken = new JwtSecurityTokenHandler();
@@ -63,27 +105,31 @@ namespace GestionRespuestosAPI.Repository
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new System.Security.Claims.ClaimsIdentity(new[]
-                {
-                    new System.Security.Claims.Claim("nombreUsuario", usuario.NombreUsuario),
-                    new System.Security.Claims.Claim("rol", usuario.Rol)
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = manejaToken.CreateToken(tokenDescriptor);
 
-            UsuarioLoginRespuestaDto usuarioLoginRespuestaDto = new UsuarioLoginRespuestaDto
+            return new UsuarioLoginRespuestaDto
             {
-                Usuario = usuario,
+                Usuario = usuarioReadDto,
+                Permisos = permisosUsuario.Select(p => new Permiso
+                {
+                    idPermiso = p.idPermiso,
+                    nombre = p.nombre,
+                    dataPermiso = p.dataPermiso
+                }).ToList(),
+                Roles = rolesUsuario.Select(r => new Rol
+                {
+                    idRol = r.idRol,
+                    descripcion = r.descripcion
+                }).ToList(),
                 Token = manejaToken.WriteToken(token)
             };
-
-            return usuarioLoginRespuestaDto;
-
-
         }
+
 
         public async Task<Usuario> Register(UsuarioRegisterDto usuarioRegisterDto)
         {
@@ -117,8 +163,37 @@ namespace GestionRespuestosAPI.Repository
 
         public static string HashPassword(string password)
         {
-            return MD5.HashData(System.Text.Encoding.UTF8.GetBytes(password))
-                .Aggregate(string.Empty, (current, b) => current + b.ToString("x2"));
+            using var rng = RandomNumberGenerator.Create();
+            byte[] salt = new byte[SaltSize];
+            rng.GetBytes(salt);
+
+            byte[] key = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                Iterations,
+                HashAlgorithmName.SHA256,
+                KeySize);
+
+            return $"{Convert.ToBase64String(salt)}:{Convert.ToBase64String(key)}";
+        }
+
+        public static bool VerifyPassword(string password, string hashedPassword)
+        {
+            var parts = hashedPassword.Split(':', 2);
+            if (parts.Length != 2)
+                return false;
+
+            byte[] salt = Convert.FromBase64String(parts[0]);
+            byte[] key = Convert.FromBase64String(parts[1]);
+
+            byte[] keyToCheck = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                Iterations,
+                HashAlgorithmName.SHA256,
+                KeySize);
+
+            return CryptographicOperations.FixedTimeEquals(keyToCheck, key);
         }
     }
 }
