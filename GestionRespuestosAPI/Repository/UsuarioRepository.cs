@@ -102,6 +102,7 @@ namespace GestionRespuestosAPI.Repository
 
             var manejaToken = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(keySecret);
+            
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -111,6 +112,7 @@ namespace GestionRespuestosAPI.Repository
             };
 
             var token = manejaToken.CreateToken(tokenDescriptor);
+
 
             return new UsuarioLoginRespuestaDto
             {
@@ -154,9 +156,6 @@ namespace GestionRespuestosAPI.Repository
 
             return usuario;
 
-         
-
-
 
         }
 
@@ -194,6 +193,20 @@ namespace GestionRespuestosAPI.Repository
                 KeySize);
 
             return CryptographicOperations.FixedTimeEquals(keyToCheck, key);
+        }
+
+        public Task<UsuarioLoginRespuestaDto> RefreshToken(RefreshTokenDto token)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static string GenerateRefreshToken()
+        {
+
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

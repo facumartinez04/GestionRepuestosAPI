@@ -9,6 +9,7 @@ namespace GestionRespuestosAPI.Modelos.Dtos
 
         public string Token { get; set; }
 
+
         public ICollection<Permiso> Permisos { get; set; }
 
         public ICollection<Rol> Roles { get; set; }

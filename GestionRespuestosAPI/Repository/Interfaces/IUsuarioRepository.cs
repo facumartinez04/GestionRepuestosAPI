@@ -1,4 +1,5 @@
 ﻿
+using GestionRepuestosAPI.Modelos.Dtos;
 using GestionRespuestosAPI.Modelos;
 using GestionRespuestosAPI.Modelos.Dtos;
 
@@ -15,6 +16,8 @@ namespace GestionRespuestosAPI.Repository.Interfaces
         Task<UsuarioLoginRespuestaDto> Login(UsuarioLoginDto usuarioLoginDto);
         Task<Usuario> Register(UsuarioRegisterDto usuarioRegisterDto);
 
+
+        Task<UsuarioLoginRespuestaDto> RefreshToken(RefreshTokenDto token);  
     }
 
 }
